@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreatByteLand - Online File Sharing Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to ThreatByteLand</h1>
+        <p>An Online File Sharing Platform</p>
+    </header>
+    <main>
+        <section>
+            <h2>Share and Collaborate</h2>
+            <p>Upload and share files with your team or collaborators securely.</p>
+        </section>
+        <section>
+            <h2>Log In or Sign Up</h2>
+            <p>Get started with ThreatByteLand today!</p>
+            <a href="{{ url_for('login') }}">Log In</a>
+            <a href="{{ url_for('signup') }}">Sign Up</a>
+        </section>
+    </main>
+
+    <div id="flash-message">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <footer>
+        <p>&copy; 2024 ThreatByteLand</p>
+    </footer>
+</body>
+</html>

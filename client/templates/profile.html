@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreatByteLand - User Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h2>User Profile</h2>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}">Uploads Dashboard</a></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="flash-message">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash {{ messages[0][0] }}">{{ messages[0][1] }}</div>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <section>
+            <h3>Your Profile</h3>
+            <div class="profile-info">
+                <div class="profile-picture">
+                    {% if user.profile_picture %}
+                        <img src="{{ url_for('profile_pictures', filename=user.profile_picture | string + '.png') }}" alt="Profile Picture">
+                    {% else %}
+                        <img src="{{ url_for('profile_pictures', filename='default_profile_picture.png') }}" alt="Default Profile Picture">
+                    {% endif %}
+                </div>
+                <div class="profile-details">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Country:</strong> {{ user.country | safe}}</p>
+                    <p><strong>Join Date:</strong> {{ user.created_at }}</p>
+
+                    <p><strong>Role:</strong> {{ user.role }}</p>
+                    <p><strong>Permissions:</strong> {{ user.permissions }}</p>
+                    <p><strong>Team:</strong> {{ user.team }}</p>
+                    <p><strong>Last Login:</strong> {{ user.last_login }}</p>
+                </div>
+            </div>
+            <a href="{{ url_for('edit_profile') }}" class="btn">Edit Profile</a>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 ThreatByteLand</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show flash messages if present
+            $('#flash-message .flash').each(function() {
+                $(this).fadeIn().delay(3000).fadeOut();
+            });
+        });
+    </script>
+</body>
+</html>

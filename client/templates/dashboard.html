@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreatByteLand - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h2>Welcome to Your Uploads Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                <li><a href="{{ url_for('upload_file') }}">Upload File</a></li>
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="flash-message">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        <section>
+            <h3>Hey {{ session['username'] }}, your uploaded files are:</h3>
+            <ul class="file-list">
+                {% for file in files %}
+                <li class="file-item">
+                    <div class="actions">
+                    <h4>{{ file }}</h4>
+                    <br>
+                    <button class="comment-btn">Add Comment</button>
+                    <a href="{{ url_for('download_file', filename=file) }}" class="btn-download" download>Download</a>
+                    <button class="delete-btn" data-filename="{{ file }}">Delete</button>
+                    </div>
+                    <br>
+                    <br>
+                    <p>
+                        <div class="comment-section" style="display: none;">
+                            <form id="comment-form">
+                                <input type="text" id="comment-input" placeholder="Add your comment here...">
+                                <!-- <textarea name="comment" placeholder="Add your comment here..." required></textarea> -->
+                            </form>
+                            
+                        </div>
+                    </p>
+                    <ul id="comments-list"></ul>
+                    <hr>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        <br>
+        <section>
+            <div class="search-container">
+                <div class="search-bar">
+                    <form action="{{ url_for('dashboard') }}" method="GET">
+                        <input type="text" name="search" placeholder="Search files..." value="{{ search_query | safe }}">
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 ThreatByteLand</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show flash messages if present
+            $('#flash-message .flash').each(function() {
+                $(this).fadeIn().delay(3000).fadeOut();
+            });
+
+            // jQuery code to handle file deletion
+            $('.delete-btn').click(function(event) {
+                // Prevent the default form submission behavior
+                event.preventDefault();
+                
+                // Get the filename from the button's data attribute
+                var filename = $(this).data('filename');
+                var $fileItem = $(this).closest('.file-item');
+                
+                // Send an AJAX request to the server to delete the file
+                $.ajax({
+                    type: 'POST',
+                    url: '/delete/' + filename,
+                    success: function(response) {
+                        // Display the flash message in the flash-message div
+                        $('#flash-message').text(response.message).removeClass('success error').addClass(response.type).fadeIn().delay(3000).fadeOut();
+                        // Remove the file from the dashboard if it was successfully deleted
+                        if (response.type === 'success') {
+                            $fileItem.remove();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#flash-message').text('An error occurred while deleting the file.').removeClass('success').addClass('error').fadeIn().delay(3000).fadeOut();
+                        console.error('Error:', error);
+                    }
+                });
+            });
+            
+            // jQuery code to handle adding comments
+            $('.comment-btn').click(function() {
+                var $commentSection = $(this).closest('.file-item').find('.comment-section');
+                $commentSection.slideToggle();
+            });
+
+            // Handle comment submission
+            $('#comment-form').submit(function(event) {
+                event.preventDefault();
+                var comment = $('#comment-input').val();
+                if (comment) {
+                    $('#comments-list').append('<li>' + comment + '</li>');
+                    $('#comment-input').val('');
+                }
+            });
+
+
+        });
+
+    </script>
+</body>
+</html>
