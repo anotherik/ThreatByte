@@ -2,6 +2,11 @@
 
 ThreatByteLand is a vulnerable web application designed to demonstrate some Web Application and API Security risks. It provides a platform to explore and understand common security vulnerabilities in web applications and APIs.
 
+## Requirements
+
+ - Python 3.x (where x is your specific Python version, e.g., 3.6, 3.7, 3.8, etc.)
+ - SQLite
+
 ## Run
 
 To run ThreatByteLand locally, follow these steps:
