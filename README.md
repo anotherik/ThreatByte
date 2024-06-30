@@ -1,47 +1,68 @@
-# ThreatByteLand
+# ThreatByte
 
-ThreatByteLand is a vulnerable web application designed to demonstrate some Web Application and API Security risks. It provides a platform to explore and understand common security vulnerabilities in web applications and APIs.
+ThreatByte is a vulnerable web application designed to demonstrate some Web Application and API Security risks. It provides a platform to explore and understand common security vulnerabilities in web applications and APIs.
 
 ## Requirements
 
- - Python 3.x (where x is your specific Python version, e.g., 3.6, 3.7, 3.8, etc.)
+ - Python 3.x (where x is your specific Python version)
  - SQLite
 
 ## Run
 
-To run ThreatByteLand locally, follow these steps:
+To run ThreatByte application locally, you can follow these steps:
 
 1. **Clone the repository:**
 
    ```
-   git clone https://github.com/your-username/threatbyteland.git
+   git clone https://github.com/anotherik/ThreatByte.git
    ```
 
 2. **Navigate to the project directory:**
 
    ```
-   cd threatbyteland
+   cd threatbyte
    ```
 
-3. **Install dependencies:**
+3. **Create a Virtual Environment**:
+    ```bash
+    python -m venv venv_threatbyte
+    ```
+
+4. **Activate the Virtual Environment**:
+    - On Windows:
+        ```bash
+        venv_threatbyte\Scripts\activate
+        ```
+    - On macOS and Linux:
+        ```bash
+        source venv_threatbyte/bin/activate
+        ```
+        
+5. **Install dependencies:**
 
    ```
    pip install -r requirements.txt
    ```
 
-4. **Initialize the database:**
+6. **Initialize the database:**
 
    ```
    python db/create_db_tables.py
    ```
 
-5. **Run the application:**
+7. **Run the application:**
 
    ```
    python run.py
    ```
 
-7. **Access the application in your web browser at `http://localhost:5000`.**
+8. **Access the application in your web browser at `http://localhost:5000`.**
+
+9. **Deactivate the Virtual Environment**:
+    At the end of testing, deactivate the virtual environment:
+    ```bash
+    deactivate
+    ```
 
 ## Docker
 
@@ -91,6 +112,3 @@ The ThreatByteLand application aims to represent a simple online sharing platfor
   - Broken Function Level Authorization - BFLA
 - **Insecure configurations**
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
