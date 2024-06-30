@@ -21,6 +21,7 @@ def create_users_table():
     ''')
     cursor.commit()
     cursor.close()
+    print("User tables created successfully.")
 
 # Function to create the files table
 def create_files_table():
@@ -35,13 +36,10 @@ def create_files_table():
     ''')
     cursor.commit()
     cursor.close()
-
-# Function to create additional tables if needed
-def create_additional_tables():
-    # Add code to create additional tables here
-    pass
+    print("Files table created successfully.")
 
 if __name__ == '__main__':
     create_users_table()
     create_files_table()
-    create_additional_tables()
+    print("Tables creation completed successfully.")
+
