@@ -104,7 +104,8 @@ The ThreatByteLand application aims to represent a simple online sharing platfor
     - Reflected
     - DOM
     - Stored 
-- **Cross Site Request Forgery**
+- **Cross-Site Request Forgery**
+- **Server-Side Request Forgery**
 - **Unrestricted File Upload**
 - **Broken Access Control**
   - Broken Object Level Authorization - BOLA
