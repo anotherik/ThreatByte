@@ -73,6 +73,12 @@ delete_model = api.model('DeleteSuccess', {
     'message': fields.String(description='Confirmation of successful deletion')
 })
 
+# Define the model for profile picture update requests
+profile_pic_model = api.model('ProfilePicture', {
+    'username': fields.String(required=True, description='Username of the user'),
+    'picture_url': fields.String(required=True, description='URL to fetch the profile picture from')
+})
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -231,4 +237,62 @@ class UserDelete(Resource):
                 response = make_response(jsonify({'error': 'User not found'}), 404)
                 return response
 
+@ns.route('/update_picture')
+class ProfilePicture(Resource):
+    @api.expect(profile_pic_model)
+    def post(self):
+        """
+        Update the user's profile picture by fetching it from a provided URL.
+        This endpoint is vulnerable to SSRF, allowing external service interaction.
+        """
+        data = api.payload
+        username = data['username']
+        picture_url = data['picture_url']
 
+        try:
+            # Fetch the picture from the URL provided by the user
+            response = requests.get(picture_url)
+
+            # Check if the request was successful
+            if response.status_code == 200:
+                # Here, instead of actually saving the picture, we'll just simulate that process.
+                # Vulnerability point: Fetching content from an arbitrary URL provided by the user
+                if 'image/jpeg' in response.headers['Content-Type'] or 'image/png' in response.headers['Content-Type']:
+                    
+                    conn = get_db_connection()
+                    cursor = conn.cursor()
+                    
+                    # Get the user by username
+                    cursor.execute("SELECT id, profile_picture FROM users WHERE username = ?", (username,))
+                    current_user = cursor.fetchone()
+
+                    if current_user:
+                        user_id = current_user['id']
+                        profile_picture_id = current_user['profile_picture']
+
+                        # Generate a new profile picture ID if necessary
+                        if profile_picture_id is None:
+                            cursor.execute("SELECT MAX(profile_picture) FROM users")
+                            max_id = cursor.fetchone()[0]
+                            if max_id is None:
+                                max_id = 0
+                            profile_picture_id = max_id + 1
+
+                        # Save the profile picture file
+                        filename = str(profile_picture_id) + '.png'
+                        file_path = os.path.join(PROFILE_PICTURES_UPLOAD_FOLDER, filename)
+                        with open(file_path, 'wb') as file:
+                            file.write(response.content)
+                        
+                        # Update the user's profile picture ID in the database
+                        cursor.execute("UPDATE users SET profile_picture = ? WHERE id = ?", (profile_picture_id, user_id))
+                        conn.commit()
+                        return {'message': f'Profile picture updated successfully for user {username}'}, 200
+                    else:
+                        return {'error': 'User not found'}, 404
+                else:
+                    return {'error': 'Invalid image format'}, 400
+            else:
+                return {'message': 'Failed to fetch the picture from the provided URL'}, 400
+        except Exception as e:
+            return {'message': str(e)}, 500
