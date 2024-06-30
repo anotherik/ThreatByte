@@ -66,25 +66,25 @@ To run ThreatByte application locally, you can follow these steps:
 
 ## Docker
 
-Alternatively, you can use Docker to run ThreatByteLand. Ensure you have Docker installed on your system.
+Alternatively, you can use Docker to run ThreatByte. Ensure you have Docker installed on your system.
 
 1. **Build the Docker image:**
 
    ```
-   docker build -t threatbyteland .
+   docker build -t threatbyte .
    ```
 
 2. **Run the Docker container:**
 
    ```
-   docker run -p 5000:5000 threatbyteland
+   docker run -p 5000:5000 threatbyte
    ```
 
 3. **Access the application in your web browser at `http://localhost:5000`.**
 
 ## Features
 
-The ThreatByteLand application aims to represent a simple online sharing platform. Currently it has the following features:
+The ThreatByte application aims to represent a simple online sharing platform. Currently it has the following features:
 
 - **User Authentication:** Users can sign up, log in, and log out.
 - **Dashboard:** Users have a personalized dashboard to view and manage their uploaded files.
