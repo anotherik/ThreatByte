@@ -20,14 +20,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
+      - name: Install Cosign pinned version
+        env:
+          COSIGN_VERSION: "3.1.1"
+        run: |
+          set -euo pipefail
+
+          wget -q "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64"
+          sudo install -m 0755 cosign-linux-amd64 /usr/local/bin/cosign
+
+          cosign version
+
       - name: Install Trivy pinned and verified
         env:
           TRIVY_VERSION: "0.71.2"
         run: |
           set -euo pipefail
-
-          sudo apt-get update
-          sudo apt-get install -y wget cosign
 
           ASSET="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
           BASE_URL="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
@@ -41,12 +49,13 @@ jobs:
             --certificate-identity="https://github.com/aquasecurity/trivy/.github/workflows/reusable-release.yaml@refs/tags/v${TRIVY_VERSION}"
 
           tar -xzf "${ASSET}"
-          sudo mv trivy /usr/local/bin/trivy
+          sudo install -m 0755 trivy /usr/local/bin/trivy
 
           trivy --version
 
       - name: Run Trivy SCA scan and generate SARIF
         run: |
+          set -euo pipefail
           trivy fs --scanners vuln . --format sarif -o report.sarif
 
       - name: Upload SARIF to GitHub Code Scanning
